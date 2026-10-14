@@ -39,8 +39,13 @@ By hand:
 
 ## Publishing
 
-    python3 books.py export && (cd site && npm run build)
-    rsync -av --delete site/_site/ <server>:<path>/
+    cd site && npm run sync
+
+That exports the catalogue, rebuilds the site and rsyncs it to
+`geekity06web:/var/www/rpgdb.geekity.com/` (`geekity06web` is an alias in `~/.ssh/config`).
+Caddy serves that directory directly, so there's nothing to restart.
+
+To build without uploading: `python3 books.py export && (cd site && npm run build)`.
 
 Preview locally with `cd site && npm run serve`.
 

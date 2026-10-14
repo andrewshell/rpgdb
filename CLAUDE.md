@@ -57,8 +57,9 @@ Andrew lays books out on a table and sends a photo. Process every book in it:
 
 ## Publishing
 
-    python3 books.py export && (cd site && npm run build)
-    rsync -av --delete site/_site/ <server>:<path>/
+    python3 books.py export && (cd site && npm run build)   # local build only
+    cd site && npm run sync                                  # export + build + rsync to the live site
 
-The build wipes `site/_site` first so removed or replaced covers don't linger. Andrew runs the rsync.
+The build wipes `site/_site` first so removed or replaced covers don't linger. `sync` publishes
+to rpgdb.geekity.com; only run it when Andrew asks.
 DriveThruRPG's `api/vBeta` is undocumented; if it stops working, `add-manual` still works.
