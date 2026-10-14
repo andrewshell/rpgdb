@@ -1,7 +1,7 @@
 # TTRPG collection
 
-Andrew's catalogue of physical RPG books, built so he can check "do I already own this?" on his
-phone at conventions. `books.py` (stdlib Python, macOS `sips` for images) keeps the catalogue in
+A catalogue of the owner's physical RPG books, built so they can check "do I already own this?" on
+their phone at conventions. `books.py` (stdlib Python, macOS `sips` for images) keeps the catalogue in
 `books.db` and covers in `covers/`. `site/` is an 11ty project that renders a searchable static
 page from `site/src/_data/books.json`; `site/_site/` is what gets uploaded.
 
@@ -19,7 +19,7 @@ page from `site/src/_data/books.json`; `site/_site/` is what gets uploaded.
 
 ## Cataloguing a batch photo
 
-Andrew lays books out on a table and sends a photo. Process every book in it:
+The user lays books out on a table and sends a photo. Process every book in it:
 
 1. If it's HEIC, convert it first: `sips -s format jpeg IMG.heic --out full.jpg`. Pasted images land
    in `~/.claude/uploads/...`; work on copies in the scratchpad, never next to the original.
@@ -42,7 +42,7 @@ Andrew lays books out on a table and sends a photo. Process every book in it:
 7. If the series name, edition or cover subtitle isn't in the title, put it in notes with `edit`
    (e.g. "Legendary Kingdoms Book Two", "Solo RPG Guide", "2024 revision; 5.5e"). Notes are
    searchable, and this is the only way a series search finds the book.
-8. No readable title (cipher or art-only covers, spine-only titles): ask Andrew rather than guess.
+8. No readable title (cipher or art-only covers, spine-only titles): ask the user rather than guess.
 9. `export`, then `cd site && npm run build`. Report what was added, what was entered by hand,
    which edition you chose when there was a choice, and anything uncertain.
 
@@ -61,5 +61,5 @@ Andrew lays books out on a table and sends a photo. Process every book in it:
     cd site && npm run sync                                  # export + build + rsync to the live site
 
 The build wipes `site/_site` first so removed or replaced covers don't linger. `sync` publishes
-to rpgdb.geekity.com; only run it when Andrew asks.
+to the live site (target in `SYNC_TARGET` or `.sync-target`); only run it when the user asks.
 DriveThruRPG's `api/vBeta` is undocumented; if it stops working, `add-manual` still works.

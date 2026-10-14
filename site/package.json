@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rm -rf _site && eleventy",
     "serve": "eleventy --serve",
-    "sync": "python3 ../books.py export && npm run build && rsync -avz --delete _site/ geekity06web:/var/www/rpgdb.geekity.com/"
+    "sync": "sh sync.sh"
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6"

@@ -41,9 +41,20 @@ By hand:
 
     cd site && npm run sync
 
-That exports the catalogue, rebuilds the site and rsyncs it to
-`geekity06web:/var/www/rpgdb.geekity.com/` (`geekity06web` is an alias in `~/.ssh/config`).
-Caddy serves that directory directly, so there's nothing to restart.
+That exports the catalogue, rebuilds the site and rsyncs it (with `--delete`) to the target in
+`SYNC_TARGET`, or else in a `.sync-target` file at the repo root, which git ignores:
+
+    echo "user@host:/var/www/my-shelf/" > .sync-target
+
+Mine is live at https://rpgdb.geekity.com, served as static files by Caddy:
+
+    rpgdb.geekity.com {
+    	root * /var/www/rpgdb.geekity.com
+    	encode zstd gzip
+    	file_server
+    	header /sw.js Cache-Control "no-cache"
+    	header /manifest.webmanifest Content-Type "application/manifest+json"
+    }
 
 To build without uploading: `python3 books.py export && (cd site && npm run build)`.
 
@@ -71,7 +82,23 @@ page and all thumbnails at install and serves everything cache-first. Large cove
 separate cache that survives updates, so a republish only downloads covers that changed.
 The icon is drawn by `tools/make_icon.py`.
 
-## Caveat
+## Forking it for your own collection
+
+1. Fork and clone, then clear out my collection:
+
+       git rm -r --cached books.db covers && rm -rf books.db covers site/src/covers
+
+   `books.py` creates a fresh database on first use.
+2. Rename the app in `site/src/_data/site.json` (page title, Home Screen name).
+3. Optionally restyle the icon: edit the colours in `tools/make_icon.py` and run it.
+4. Set your sync target (see Publishing), add some books, and `npm run sync`.
+
+## Caveats
 
 DriveThruRPG lookups use its undocumented storefront API (`api.drivethrurpg.com/api/vBeta`). If it
 stops working, `add-manual` still does.
+
+## License
+
+The code is MIT licensed (see `LICENSE`). Cover art and product descriptions in `books.db` and
+`covers/` belong to their publishers and are included only as a record of my collection.

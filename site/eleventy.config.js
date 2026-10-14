@@ -2,7 +2,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/covers");
   eleventyConfig.addPassthroughCopy("src/icons");
   eleventyConfig.addPassthroughCopy("src/search.js");
-  eleventyConfig.addPassthroughCopy("src/manifest.webmanifest");
 
   // A new version on every build makes phones replace their offline copy after each publish.
   const builtAt = new Date();

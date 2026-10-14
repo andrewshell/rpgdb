@@ -1,7 +1,11 @@
+---
+permalink: manifest.webmanifest
+eleventyExcludeFromCollections: true
+---
 {
-  "name": "My RPG Shelf",
-  "short_name": "RPG Shelf",
-  "description": "Check whether I already own an RPG book.",
+  "name": {{ site.name | dump | safe }},
+  "short_name": {{ site.shortName | dump | safe }},
+  "description": {{ site.description | dump | safe }},
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
