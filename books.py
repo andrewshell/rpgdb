@@ -260,13 +260,26 @@ def cmd_list(args):
 def cmd_export(args):
     src = Path(args.out) / "src"
     covers = src / "covers"
-    shutil.rmtree(covers, ignore_errors=True)
-    covers.mkdir(parents=True)
+    covers.mkdir(parents=True, exist_ok=True)
     (src / "_data").mkdir(exist_ok=True)
     books = []
+    wanted = set()
     for row in db().execute("SELECT * FROM books ORDER BY title COLLATE NOCASE"):
         if row["thumb"]:
             shutil.copyfile(COVERS / row["thumb"], covers / row["thumb"])
+            wanted.add(row["thumb"])
+        large = None
+        if row["cover"]:
+            large = f"{Path(row['cover']).stem}-large.jpg"
+            wanted.add(large)
+            # Resizing every cover takes a while, so only redo ones whose source changed.
+            dest, source = covers / large, COVERS / row["cover"]
+            if not dest.exists() or dest.stat().st_mtime < source.stat().st_mtime:
+                subprocess.run(
+                    ["sips", "-s", "format", "jpeg", "-s", "formatOptions", "65", "-Z", "800",
+                     str(source), "--out", str(dest)],
+                    check=True, capture_output=True,
+                )
         books.append({
             "title": row["title"],
             "publisher": row["publisher"] or "",
@@ -274,8 +287,12 @@ def cmd_export(args):
             "copies": row["copies"],
             "notes": row["notes"] or "",
             "thumb": f"covers/{row['thumb']}" if row["thumb"] else None,
+            "large": f"covers/{large}" if large else None,
             "url": row["url"],
         })
+    for f in covers.iterdir():
+        if f.name not in wanted:
+            f.unlink()
     (src / "_data" / "books.json").write_text(json.dumps(books, indent=1))
     print(f"EXPORTED {len(books)} books to {src}/ — run `npm run build` in {args.out}")
 

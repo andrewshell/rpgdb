@@ -44,7 +44,27 @@ By hand:
 
 Preview locally with `cd site && npm run serve`.
 
+`export` also makes an 800px cover for each book (shown when a cover is tapped). It only redoes a
+cover when its source image changes; if you change the size or quality settings in `cmd_export`,
+delete `site/src/covers/*-large.jpg` first.
+
 The page has a `noindex` tag but no password, so anyone with the URL can see it.
+
+## On the phone
+
+The site is an installable web app that works offline. It must be served over HTTPS; service
+workers don't run on plain HTTP (except `localhost`).
+
+1. Open the page in Safari on Wi-Fi, then Share → Add to Home Screen.
+2. Open it from the Home Screen icon and leave it open until the footer says "Available offline"
+   (covers download in the background, about 15 MB).
+3. After publishing an update, open the app once with a connection, close it, and open it again
+   to get the new catalogue. The footer shows when the catalogue was last built.
+
+How it works: `site/src/sw.njk` generates `sw.js` with a new version on every build. It caches the
+page and all thumbnails at install and serves everything cache-first. Large covers live in a
+separate cache that survives updates, so a republish only downloads covers that changed.
+The icon is drawn by `tools/make_icon.py`.
 
 ## Caveat
 
